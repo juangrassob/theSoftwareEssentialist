@@ -16,7 +16,7 @@ class StudentsController {
     this.setupErrorHandler();
   }
 
-  public getRouter() {
+  public getRouter(): express.Router {
     return this.router;
   }
 
