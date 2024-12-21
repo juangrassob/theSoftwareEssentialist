@@ -1,3 +1,9 @@
+export class InvalidRequestBodyException extends Error {
+  constructor(fields: string[]) {
+    super(`Missing fields: ${fields.join(", ")}`);
+  }
+}
+
 export class StudentNotFoundExeption extends Error {
   constructor(id: string) {
     super(`Student with ${id} was not found.`);

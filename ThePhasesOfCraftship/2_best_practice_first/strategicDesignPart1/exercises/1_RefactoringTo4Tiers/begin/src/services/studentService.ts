@@ -1,4 +1,5 @@
 import { Database } from "../database";
+import { CreateStudentDTO, StudentID } from "../dtos/studentDto";
 import { StudentNotFoundExeption } from "../shared/exeptions";
 
 export class StudentService {
@@ -7,7 +8,8 @@ export class StudentService {
     this.db = db;
   }
 
-  async createStudent(name: string) {
+  async createStudent(dto: CreateStudentDTO) {
+    const { name } = dto;
     const student = await this.db.student.save(name);
     return student;
   }
@@ -17,7 +19,8 @@ export class StudentService {
     return students;
   }
 
-  async getStudent(id: string) {
+  async getStudent(dto: StudentID) {
+    const { id } = dto;
     const student = await this.db.student.getById(id);
 
     if (!student) {
@@ -27,7 +30,8 @@ export class StudentService {
     return student;
   }
 
-  async getStudentAssigments(id: string) {
+  async getStudentAssigments(dto: StudentID) {
+    const { id } = dto;
     const student = await this.db.student.getById(id);
 
     if (!student) {
@@ -39,7 +43,8 @@ export class StudentService {
     return studentAssignments;
   }
 
-  async getStudentGrades(id: string) {
+  async getStudentGrades(dto: StudentID) {
+    const { id } = dto;
     const student = await this.db.student.getById(id);
 
     if (!student) {

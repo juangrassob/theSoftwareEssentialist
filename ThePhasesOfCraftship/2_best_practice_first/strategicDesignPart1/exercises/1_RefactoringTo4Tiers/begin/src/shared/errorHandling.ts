@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import {
   AssignmentNotFoundExeption,
   ClassNotFoundExeption,
+  InvalidRequestBodyException,
   StudentAlreadyEnrolledExeption,
   StudentNotFoundExeption,
 } from "./exeptions";
@@ -19,6 +20,14 @@ export function errorHandler(
   response: Response,
   next: NextFunction
 ) {
+  if (error instanceof InvalidRequestBodyException) {
+    return response.status(400).json({
+      error: Errors.ValidationError,
+      data: undefined,
+      success: false,
+    });
+  }
+
   if (error instanceof StudentNotFoundExeption) {
     return response.status(404).json({
       error: Errors.StudentNotFound,
