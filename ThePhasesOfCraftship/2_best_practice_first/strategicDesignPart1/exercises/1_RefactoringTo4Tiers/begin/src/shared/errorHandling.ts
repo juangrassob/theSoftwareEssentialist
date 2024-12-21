@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { StudentNotFoundExeption } from "./exeptions";
+import { ClassNotFoundExeption, StudentNotFoundExeption } from "./exeptions";
 import { Errors } from "../shared/errors";
 export type ErrorHandler = (
   error: Error,
@@ -17,6 +17,14 @@ export function errorHandler(
   if (error instanceof StudentNotFoundExeption) {
     return response.status(404).json({
       error: Errors.StudentNotFound,
+      data: undefined,
+      success: false,
+    });
+  }
+
+  if (error instanceof ClassNotFoundExeption) {
+    return response.status(404).json({
+      error: Errors.ClassNotFound,
       data: undefined,
       success: false,
     });
