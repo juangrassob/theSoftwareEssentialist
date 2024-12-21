@@ -1,5 +1,4 @@
 import express, { NextFunction, Request, Response } from "express";
-import { prisma } from "../database";
 import { AssignmentService } from "../services/assignmentService";
 import { ErrorHandler } from "../shared/errorHandling";
 import { Errors } from "../shared/errors";

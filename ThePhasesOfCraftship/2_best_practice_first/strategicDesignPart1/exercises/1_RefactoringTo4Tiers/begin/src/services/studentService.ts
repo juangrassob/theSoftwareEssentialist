@@ -1,44 +1,24 @@
-import { prisma } from "../database";
+import { Database } from "../database";
 import { StudentNotFoundExeption } from "../shared/exeptions";
+
 export class StudentService {
-  constructor() {}
+  private readonly db: Database;
+  constructor(db: Database) {
+    this.db = db;
+  }
 
   async createStudent(name: string) {
-    const student = await prisma.student.create({
-      data: {
-        name,
-      },
-    });
-
+    const student = await this.db.student.save(name);
     return student;
   }
 
   async getStudents() {
-    const students = await prisma.student.findMany({
-      include: {
-        classes: true,
-        assignments: true,
-        reportCards: true,
-      },
-      orderBy: {
-        name: "asc",
-      },
-    });
-
+    const students = await this.db.student.getAll();
     return students;
   }
 
   async getStudent(id: string) {
-    const student = await prisma.student.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        classes: true,
-        assignments: true,
-        reportCards: true,
-      },
-    });
+    const student = await this.db.student.getById(id);
 
     if (!student) {
       throw new StudentNotFoundExeption(id);
@@ -48,54 +28,25 @@ export class StudentService {
   }
 
   async getStudentAssigments(id: string) {
-    // check if student exists
-    const student = await prisma.student.findUnique({
-      where: {
-        id,
-      },
-    });
+    const student = await this.db.student.getById(id);
 
     if (!student) {
       throw new StudentNotFoundExeption(id);
     }
 
-    const studentAssignments = await prisma.studentAssignment.findMany({
-      where: {
-        studentId: id,
-        status: "submitted",
-      },
-      include: {
-        assignment: true,
-      },
-    });
+    const studentAssignments = await this.db.student.getAssignments(id);
 
     return studentAssignments;
   }
 
   async getStudentGrades(id: string) {
-    // check if student exists
-    const student = await prisma.student.findUnique({
-      where: {
-        id,
-      },
-    });
+    const student = await this.db.student.getById(id);
 
     if (!student) {
       throw new StudentNotFoundExeption(id);
     }
 
-    const studentAssignments = await prisma.studentAssignment.findMany({
-      where: {
-        studentId: id,
-        status: "submitted",
-        grade: {
-          not: null,
-        },
-      },
-      include: {
-        assignment: true,
-      },
-    });
+    const studentAssignments = await this.db.student.getGrades(id);
 
     return studentAssignments;
   }
