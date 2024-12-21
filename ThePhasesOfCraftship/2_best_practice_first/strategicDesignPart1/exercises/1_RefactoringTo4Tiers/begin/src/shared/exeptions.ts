@@ -17,3 +17,9 @@ export class StudentAlreadyEnrolledExeption extends Error {
     );
   }
 }
+
+export class AssignmentNotFoundExeption extends Error {
+  constructor(id: string) {
+    super(`Assignment with ${id} was not found.`);
+  }
+}
