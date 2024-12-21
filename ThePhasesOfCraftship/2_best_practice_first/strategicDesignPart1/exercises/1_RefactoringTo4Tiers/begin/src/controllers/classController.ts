@@ -4,7 +4,7 @@ import { ErrorHandler } from "../shared/errorHandling";
 import { Errors } from "../shared/errors";
 import { parseForResponse, isMissingKeys, isUUID } from "../shared/helpers";
 
-class ClassesController {
+class ClasseController {
   private router: express.Router;
   private errorHandler: ErrorHandler;
 
