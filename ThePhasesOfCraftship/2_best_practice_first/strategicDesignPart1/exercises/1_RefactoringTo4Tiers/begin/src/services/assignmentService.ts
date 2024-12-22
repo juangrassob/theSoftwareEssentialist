@@ -1,4 +1,10 @@
 import { Database } from "../database";
+import {
+  AssignmentID,
+  CreateAssignmentDTO,
+  GradeAssignmentDTO,
+  SubmitAssignmentDTO,
+} from "../dtos/assignmentDto";
 import { AssignmentNotFoundExeption } from "../shared/exeptions";
 
 export class AssignmentService {
@@ -8,7 +14,8 @@ export class AssignmentService {
     this.db = db;
   }
 
-  async getAssignment(id: string) {
+  async getAssignment(dto: AssignmentID) {
+    const { id } = dto;
     const assignment = this.db.assignment.getById(id);
 
     if (!assignment) {
@@ -18,13 +25,15 @@ export class AssignmentService {
     return assignment;
   }
 
-  async createAssignment(classId: string, title: string) {
+  async createAssignment(dto: CreateAssignmentDTO) {
+    const { classId, title } = dto;
     const assignment = this.db.assignment.save(classId, title);
 
     return assignment;
   }
 
-  async submitAssignment(id: string) {
+  async submitAssignment(dto: SubmitAssignmentDTO) {
+    const { id } = dto;
     const studentAssignment = await this.db.assignment.getById(id);
 
     if (!studentAssignment) {
@@ -36,7 +45,8 @@ export class AssignmentService {
     return studentAssignmentUpdated;
   }
 
-  async gradeAssignment(id: string, grade: string) {
+  async gradeAssignment(dto: GradeAssignmentDTO) {
+    const { id, grade } = dto;
     const studentAssignment = await this.db.assignment.getById(id);
 
     if (!studentAssignment) {

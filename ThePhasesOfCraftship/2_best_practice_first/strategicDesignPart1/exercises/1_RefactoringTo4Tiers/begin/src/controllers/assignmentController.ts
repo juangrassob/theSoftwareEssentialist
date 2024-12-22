@@ -1,4 +1,10 @@
 import express, { NextFunction, Request, Response } from "express";
+import {
+  AssignmentID,
+  CreateAssignmentDTO,
+  GradeAssignmentDTO,
+  SubmitAssignmentDTO,
+} from "../dtos/assignmentDto";
 import { AssignmentService } from "../services/assignmentService";
 import { ErrorHandler } from "../shared/errorHandling";
 import { Errors } from "../shared/errors";
@@ -37,15 +43,9 @@ class AssignmentController {
 
   async getAssignment(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
-      if (!isUUID(id)) {
-        return res.status(400).json({
-          error: Errors.ValidationError,
-          data: undefined,
-          success: false,
-        });
-      }
-      const assignment = await this.assignmentService.getAssignment(id);
+      const dto = AssignmentID.fromRequestParams(req.params);
+
+      const assignment = await this.assignmentService.getAssignment(dto);
 
       res.status(200).json({
         error: undefined,
@@ -59,21 +59,9 @@ class AssignmentController {
 
   async createAssignment(req: Request, res: Response, next: NextFunction) {
     try {
-      if (isMissingKeys(req.body, ["classId", "title"])) {
-        return res.status(400).json({
-          error: Errors.ValidationError,
-          data: undefined,
-          success: false,
-        });
-      }
+      const dto = CreateAssignmentDTO.fromRequest(req.body);
 
-      const { classId, title } = req.body;
-
-      const assignment = await this.assignmentService.createAssignment(
-        classId,
-        title
-      );
-
+      const assignment = await this.assignmentService.createAssignment(dto);
       res.status(201).json({
         error: undefined,
         data: parseForResponse(assignment),
@@ -86,18 +74,10 @@ class AssignmentController {
 
   async submitAssignment(req: Request, res: Response, next: NextFunction) {
     try {
-      if (isMissingKeys(req.body, ["id"])) {
-        return res.status(400).json({
-          error: Errors.ValidationError,
-          data: undefined,
-          success: false,
-        });
-      }
-
-      const { id } = req.body;
+      const dto = SubmitAssignmentDTO.fromRequest(req.body);
 
       const studentAssignmentUpdated =
-        await this.assignmentService.submitAssignment(id);
+        await this.assignmentService.submitAssignment(dto);
 
       res.status(200).json({
         error: undefined,
@@ -111,27 +91,10 @@ class AssignmentController {
 
   async gradeAssignment(req: Request, res: Response, next: NextFunction) {
     try {
-      if (isMissingKeys(req.body, ["id", "grade"])) {
-        return res.status(400).json({
-          error: Errors.ValidationError,
-          data: undefined,
-          success: false,
-        });
-      }
-
-      const { id, grade } = req.body;
-
-      // validate grade
-      if (!["A", "B", "C", "D"].includes(grade)) {
-        return res.status(400).json({
-          error: Errors.ValidationError,
-          data: undefined,
-          success: false,
-        });
-      }
+      const dto = GradeAssignmentDTO.fromRequest(req.body);
 
       const studentAssignmentUpdated =
-        await this.assignmentService.gradeAssignment(id, grade);
+        await this.assignmentService.gradeAssignment(dto);
 
       res.status(200).json({
         error: undefined,

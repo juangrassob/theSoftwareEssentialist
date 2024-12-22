@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
+import { ClassID, CreateClassDTO, EnrollStudentDTO } from "../dtos/classDto";
 import { ClassService } from "../services/classStervice";
 import { ErrorHandler } from "../shared/errorHandling";
 import { Errors } from "../shared/errors";
@@ -33,17 +34,9 @@ class ClasseController {
 
   private async createClass(req: Request, res: Response, next: NextFunction) {
     try {
-      if (isMissingKeys(req.body, ["name"])) {
-        return res.status(400).json({
-          error: Errors.ValidationError,
-          data: undefined,
-          success: false,
-        });
-      }
+      const dto = CreateClassDTO.fromRequest(req.body);
 
-      const { name } = req.body;
-
-      const cls = await this.classService.createClass(name);
+      const cls = await this.classService.createClass(dto);
 
       res
         .status(201)
@@ -59,16 +52,9 @@ class ClasseController {
     next: NextFunction
   ) {
     try {
-      const { id } = req.params;
-      if (!isUUID(id)) {
-        return res.status(400).json({
-          error: Errors.ValidationError,
-          data: undefined,
-          success: false,
-        });
-      }
+      const dto = ClassID.fromRequestParams(req.params);
 
-      const assignments = await this.classService.getClassAssignments(id);
+      const assignments = await this.classService.getClassAssignments(dto);
 
       res.status(200).json({
         error: undefined,
@@ -82,20 +68,9 @@ class ClasseController {
 
   private async enrollStudent(req: Request, res: Response, next: NextFunction) {
     try {
-      if (isMissingKeys(req.body, ["studentId", "classId"])) {
-        return res.status(400).json({
-          error: Errors.ValidationError,
-          data: undefined,
-          success: false,
-        });
-      }
+      const dto = EnrollStudentDTO.fromRequest(req.body);
 
-      const { studentId, classId } = req.body;
-
-      const classEnrollment = await this.classService.enrollStudent(
-        studentId,
-        classId
-      );
+      const classEnrollment = await this.classService.enrollStudent(dto);
 
       res.status(201).json({
         error: undefined,

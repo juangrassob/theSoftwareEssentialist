@@ -1,4 +1,5 @@
 import { Database } from "../database";
+import { ClassID, CreateClassDTO, EnrollStudentDTO } from "../dtos/classDto";
 import {
   ClassNotFoundExeption,
   StudentAlreadyEnrolledExeption,
@@ -11,13 +12,15 @@ export class ClassService {
     this.db = db;
   }
 
-  async createClass(name: string) {
+  async createClass(dto: CreateClassDTO) {
+    const { name } = dto;
     const cls = this.db.class.save(name);
 
     return cls;
   }
 
-  async getClassAssignments(id: string) {
+  async getClassAssignments(dto: ClassID) {
+    const { id } = dto;
     const cls = await this.db.class.getById(id);
 
     if (!cls) {
@@ -29,8 +32,8 @@ export class ClassService {
     return assignments;
   }
 
-  async enrollStudent(studentId: string, classId: string) {
-    // check if student exists
+  async enrollStudent(dto: EnrollStudentDTO) {
+    const { studentId, classId } = dto;
     const student = await this.db.student.getById(studentId);
 
     if (!student) {
