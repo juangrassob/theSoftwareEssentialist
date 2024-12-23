@@ -1,6 +1,14 @@
-import { Student, Class, Assignment, StudentAssignment, ReportCard, ClassGradeReport, ClassEnrollment } from "@prisma/client";
-import { prisma } from "../src/database";
-
+import {
+  Student,
+  Class,
+  Assignment,
+  StudentAssignment,
+  ReportCard,
+  ClassGradeReport,
+  ClassEnrollment,
+  PrismaClient,
+} from "@prisma/client";
+const prisma = new PrismaClient();
 
 async function seed() {
   const students = await Promise.all(
@@ -10,7 +18,7 @@ async function seed() {
           name: `Student ${i + 1}`,
         },
       });
-    }),
+    })
   );
 
   const classes = await Promise.all(
@@ -20,7 +28,7 @@ async function seed() {
           name: `Class ${i + 1}`,
         },
       });
-    }),
+    })
   );
 
   const assignments = await Promise.all(
@@ -31,10 +39,9 @@ async function seed() {
           title: `Assignment ${i + 1}`,
         },
       });
-    }),
+    })
   );
 
-  
   // Enroll students in classes and create student assignments with grades
   for (let i = 0; i < students.length; i++) {
     for (let j = 0; j < classes.length; j++) {
@@ -80,3 +87,4 @@ seed()
   .finally(async () => {
     await prisma.$disconnect();
   });
+

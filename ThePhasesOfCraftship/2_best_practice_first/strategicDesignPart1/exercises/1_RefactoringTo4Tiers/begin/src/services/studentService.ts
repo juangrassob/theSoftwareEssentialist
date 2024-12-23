@@ -4,22 +4,25 @@ import { StudentNotFoundExeption } from "../shared/exeptions";
 
 export class StudentService {
   private readonly db: Database;
+
   constructor(db: Database) {
+    console.log("Creating student service");
     this.db = db;
   }
 
-  async createStudent(dto: CreateStudentDTO) {
+  createStudent = async (dto: CreateStudentDTO) => {
     const { name } = dto;
+
     const student = await this.db.student.save(name);
     return student;
-  }
+  };
 
-  async getStudents() {
+  getStudents = async () => {
     const students = await this.db.student.getAll();
     return students;
-  }
+  };
 
-  async getStudent(dto: StudentID) {
+  getStudent = async (dto: StudentID) => {
     const { id } = dto;
     const student = await this.db.student.getById(id);
 
@@ -28,9 +31,9 @@ export class StudentService {
     }
 
     return student;
-  }
+  };
 
-  async getStudentAssigments(dto: StudentID) {
+  getStudentAssignments = async (dto: StudentID) => {
     const { id } = dto;
     const student = await this.db.student.getById(id);
 
@@ -41,9 +44,9 @@ export class StudentService {
     const studentAssignments = await this.db.student.getAssignments(id);
 
     return studentAssignments;
-  }
+  };
 
-  async getStudentGrades(dto: StudentID) {
+  getStudentGrades = async (dto: StudentID) => {
     const { id } = dto;
     const student = await this.db.student.getById(id);
 
@@ -54,5 +57,5 @@ export class StudentService {
     const studentAssignments = await this.db.student.getGrades(id);
 
     return studentAssignments;
-  }
+  };
 }

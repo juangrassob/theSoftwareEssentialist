@@ -19,7 +19,9 @@ export function errorHandler(
   request: Request,
   response: Response,
   next: NextFunction
-) {
+): Response {
+  console.error(error);
+
   if (error instanceof InvalidRequestBodyException) {
     return response.status(400).json({
       error: Errors.ValidationError,
@@ -60,7 +62,7 @@ export function errorHandler(
     });
   }
 
-  response
+  return response
     .status(500)
     .json({ error: Errors.ServerError, data: undefined, success: false });
 }

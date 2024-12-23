@@ -2,10 +2,9 @@ import express, { NextFunction, Request, Response } from "express";
 import { CreateStudentDTO, StudentID } from "../dtos/studentDto";
 import { StudentService } from "../services/studentService";
 import { ErrorHandler } from "../shared/errorHandling";
-import { Errors } from "../shared/errors";
 import { parseForResponse, isMissingKeys, isUUID } from "../shared/helpers";
 
-class StudentController {
+export default class StudentController {
   private router: express.Router;
   private errorHandler: ErrorHandler;
   private studentService: StudentService;
@@ -34,9 +33,13 @@ class StudentController {
     this.router.get("/:id/grades", this.getStudentGrades);
   }
 
-  private async createStudent(req: Request, res: Response, next: NextFunction) {
+  private createStudent = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
-      const dto = CreateStudentDTO.fromRequest(req);
+      const dto = CreateStudentDTO.fromRequest(req.body);
 
       const student = await this.studentService.createStudent(dto);
 
@@ -48,12 +51,16 @@ class StudentController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  private async getStudents(req: Request, res: Response, next: NextFunction) {
+  private getStudents = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
-      const students = this.studentService.getStudents();
-
+      const students = await this.studentService.getStudents();
+      console.log({ students });
       res.status(200).json({
         error: undefined,
         data: parseForResponse(students),
@@ -62,13 +69,17 @@ class StudentController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  private async getStudent(req: Request, res: Response, next: NextFunction) {
+  private getStudent = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const dto = StudentID.fromRequestParams(req.params);
 
-      const student = this.studentService.getStudent(dto);
+      const student = await this.studentService.getStudent(dto);
 
       res.status(200).json({
         error: undefined,
@@ -78,19 +89,18 @@ class StudentController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  private async getStudentAssigments(
+  private getStudentAssigments = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ) {
+  ) => {
     try {
       const dto = StudentID.fromRequestParams(req.params);
 
-      const studentAssignments = await this.studentService.getStudentAssigments(
-        dto
-      );
+      const studentAssignments =
+        await this.studentService.getStudentAssignments(dto);
 
       res.status(200).json({
         error: undefined,
@@ -100,13 +110,13 @@ class StudentController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  private async getStudentGrades(
+  private getStudentGrades = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ) {
+  ) => {
     try {
       const dto = StudentID.fromRequestParams(req.params);
       const studentAssignments = await this.studentService.getStudentGrades(
@@ -121,5 +131,5 @@ class StudentController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 }

@@ -5,7 +5,7 @@ import { ErrorHandler } from "../shared/errorHandling";
 import { Errors } from "../shared/errors";
 import { parseForResponse, isMissingKeys, isUUID } from "../shared/helpers";
 
-class ClasseController {
+export default class ClasseController {
   private classService: ClassService;
   private router: express.Router;
   private errorHandler: ErrorHandler;
@@ -32,7 +32,11 @@ class ClasseController {
     this.router.get("/enrollments", this.enrollStudent);
   }
 
-  private async createClass(req: Request, res: Response, next: NextFunction) {
+  private createClass = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const dto = CreateClassDTO.fromRequest(req.body);
 
@@ -44,13 +48,13 @@ class ClasseController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  private async getClassAssignments(
+  private getClassAssignments = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ) {
+  ) => {
     try {
       const dto = ClassID.fromRequestParams(req.params);
 
@@ -64,9 +68,13 @@ class ClasseController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  private async enrollStudent(req: Request, res: Response, next: NextFunction) {
+  private enrollStudent = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const dto = EnrollStudentDTO.fromRequest(req.body);
 
@@ -80,5 +88,5 @@ class ClasseController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 }

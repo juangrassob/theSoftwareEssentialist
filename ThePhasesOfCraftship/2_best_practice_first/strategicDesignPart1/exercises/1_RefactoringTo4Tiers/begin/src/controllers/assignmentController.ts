@@ -7,10 +7,9 @@ import {
 } from "../dtos/assignmentDto";
 import { AssignmentService } from "../services/assignmentService";
 import { ErrorHandler } from "../shared/errorHandling";
-import { Errors } from "../shared/errors";
 import { parseForResponse, isMissingKeys, isUUID } from "../shared/helpers";
 
-class AssignmentController {
+export default class AssignmentController {
   private assignmentService: AssignmentService;
   private router: express.Router;
   private errorHandler: ErrorHandler;
@@ -41,7 +40,11 @@ class AssignmentController {
     this.router.post("/grade", this.gradeAssignment);
   }
 
-  async getAssignment(req: Request, res: Response, next: NextFunction) {
+  private getAssignment = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const dto = AssignmentID.fromRequestParams(req.params);
 
@@ -55,9 +58,13 @@ class AssignmentController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  async createAssignment(req: Request, res: Response, next: NextFunction) {
+  private createAssignment = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const dto = CreateAssignmentDTO.fromRequest(req.body);
 
@@ -70,9 +77,13 @@ class AssignmentController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  async submitAssignment(req: Request, res: Response, next: NextFunction) {
+  private submitAssignment = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const dto = SubmitAssignmentDTO.fromRequest(req.body);
 
@@ -87,9 +98,13 @@ class AssignmentController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  async gradeAssignment(req: Request, res: Response, next: NextFunction) {
+  private gradeAssignment = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const dto = GradeAssignmentDTO.fromRequest(req.body);
 
@@ -104,5 +119,5 @@ class AssignmentController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 }

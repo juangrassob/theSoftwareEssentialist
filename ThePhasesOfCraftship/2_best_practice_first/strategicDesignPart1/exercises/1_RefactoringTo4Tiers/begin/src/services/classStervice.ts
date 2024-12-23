@@ -8,18 +8,19 @@ import {
 
 export class ClassService {
   private readonly db: Database;
+
   constructor(db: Database) {
     this.db = db;
   }
 
-  async createClass(dto: CreateClassDTO) {
+  createClass = async (dto: CreateClassDTO) => {
     const { name } = dto;
-    const cls = this.db.class.save(name);
+    const cls = await this.db.class.save(name);
 
     return cls;
-  }
+  };
 
-  async getClassAssignments(dto: ClassID) {
+  getClassAssignments = async (dto: ClassID) => {
     const { id } = dto;
     const cls = await this.db.class.getById(id);
 
@@ -27,12 +28,12 @@ export class ClassService {
       throw new ClassNotFoundExeption(id);
     }
 
-    const assignments = this.db.class.getAssignments(id);
+    const assignments = await this.db.class.getAssignments(id);
 
     return assignments;
-  }
+  };
 
-  async enrollStudent(dto: EnrollStudentDTO) {
+  enrollStudent = async (dto: EnrollStudentDTO) => {
     const { studentId, classId } = dto;
     const student = await this.db.student.getById(studentId);
 
@@ -41,13 +42,13 @@ export class ClassService {
     }
 
     // check if class exists
-    const cls = this.db.class.getById(classId);
+    const cls = await this.db.class.getById(classId);
 
     if (!cls) {
       throw new ClassNotFoundExeption(classId);
     }
 
-    // check if student is already unrolled in class
+    // check if student is already enrolled in class
     const duplicatedClassEnrollment = await this.db.class.getEnrollment(
       classId,
       studentId
@@ -63,5 +64,5 @@ export class ClassService {
     );
 
     return classEnrollment;
-  }
+  };
 }

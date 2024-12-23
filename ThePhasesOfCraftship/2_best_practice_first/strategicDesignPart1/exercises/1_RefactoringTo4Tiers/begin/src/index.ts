@@ -1,20 +1,38 @@
-import express, { Request, Response } from "express";
-import { prisma } from "./database";
-import { Student, Class, Assignment, StudentAssignment } from "@prisma/client";
-import { error } from "console";
+import express from "express";
+import { Database } from "./database";
+import { PrismaClient } from "@prisma/client";
+import { StudentService } from "./services/studentService";
+import { ClassService } from "./services/classStervice";
+import { AssignmentService } from "./services/assignmentService";
+import StudentController from "./controllers/studentController";
+import { errorHandler } from "./shared/errorHandling";
+import ClasseController from "./controllers/classController";
+import AssignmentController from "./controllers/assignmentController";
+
 const cors = require("cors");
 const app = express();
+
 app.use(express.json());
 app.use(cors());
 
-// API Endpoints
+const prisma = new PrismaClient();
 
-// POST student created
+const database = new Database(prisma);
 
-// POST class created
+const studentService = new StudentService(database);
+const classService = new ClassService(database);
+const assignmentService = new AssignmentService(database);
 
-// POST student assigned to class
-// POST assignment created
+const studentController = new StudentController(studentService, errorHandler);
+const classController = new ClasseController(classService, errorHandler);
+const assignmentController = new AssignmentController(
+  assignmentService,
+  errorHandler
+);
+
+app.use("/student", studentController.getRouter());
+app.use("/class", classController.getRouter());
+app.use("/assignment", assignmentController.getRouter());
 
 const port = process.env.PORT || 3000;
 

@@ -14,25 +14,25 @@ export class AssignmentService {
     this.db = db;
   }
 
-  async getAssignment(dto: AssignmentID) {
+  getAssignment = async (dto: AssignmentID) => {
     const { id } = dto;
-    const assignment = this.db.assignment.getById(id);
+    const assignment = await this.db.assignment.getById(id);
 
     if (!assignment) {
       throw new AssignmentNotFoundExeption(id);
     }
 
     return assignment;
-  }
+  };
 
-  async createAssignment(dto: CreateAssignmentDTO) {
+  createAssignment = async (dto: CreateAssignmentDTO) => {
     const { classId, title } = dto;
-    const assignment = this.db.assignment.save(classId, title);
+    const assignment = await this.db.assignment.save(classId, title);
 
     return assignment;
-  }
+  };
 
-  async submitAssignment(dto: SubmitAssignmentDTO) {
+  submitAssignment = async (dto: SubmitAssignmentDTO) => {
     const { id } = dto;
     const studentAssignment = await this.db.assignment.getById(id);
 
@@ -43,9 +43,9 @@ export class AssignmentService {
     const studentAssignmentUpdated = await this.db.assignment.submit(id);
 
     return studentAssignmentUpdated;
-  }
+  };
 
-  async gradeAssignment(dto: GradeAssignmentDTO) {
+  gradeAssignment = async (dto: GradeAssignmentDTO) => {
     const { id, grade } = dto;
     const studentAssignment = await this.db.assignment.getById(id);
 
@@ -56,5 +56,5 @@ export class AssignmentService {
     const studentAssignmentUpdated = await this.db.assignment.grade(id, grade);
 
     return studentAssignmentUpdated;
-  }
+  };
 }
