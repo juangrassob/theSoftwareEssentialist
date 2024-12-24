@@ -60,7 +60,7 @@ export default class StudentController {
   ) => {
     try {
       const students = await this.studentService.getStudents();
-      console.log({ students });
+
       res.status(200).json({
         error: undefined,
         data: parseForResponse(students),
