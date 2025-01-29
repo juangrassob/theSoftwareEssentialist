@@ -31,14 +31,27 @@ CREATE TABLE "Assignment" (
 
 -- CreateTable
 CREATE TABLE "StudentAssignment" (
+    "id" TEXT NOT NULL PRIMARY KEY,
     "studentId" TEXT NOT NULL,
     "assignmentId" TEXT NOT NULL,
-    "grade" TEXT,
-    "status" TEXT NOT NULL DEFAULT 'NOT_STARTED',
-
-    PRIMARY KEY ("studentId", "assignmentId"),
     CONSTRAINT "StudentAssignment_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "StudentAssignment_assignmentId_fkey" FOREIGN KEY ("assignmentId") REFERENCES "Assignment" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "AssignmentSubmission" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "studentAssignmentId" TEXT NOT NULL,
+    "submissionContent" TEXT,
+    CONSTRAINT "AssignmentSubmission_studentAssignmentId_fkey" FOREIGN KEY ("studentAssignmentId") REFERENCES "StudentAssignment" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "GradedAssignment" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "assignmentSubmissionId" TEXT NOT NULL,
+    "grade" TEXT,
+    CONSTRAINT "GradedAssignment_assignmentSubmissionId_fkey" FOREIGN KEY ("assignmentSubmissionId") REFERENCES "AssignmentSubmission" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -57,6 +70,15 @@ CREATE TABLE "ClassGradeReport" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Student_email_key" ON "Student"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Class_name_key" ON "Class"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "StudentAssignment_studentId_assignmentId_key" ON "StudentAssignment"("studentId", "assignmentId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "GradedAssignment_assignmentSubmissionId_key" ON "GradedAssignment"("assignmentSubmissionId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ClassGradeReport_classId_key" ON "ClassGradeReport"("classId");

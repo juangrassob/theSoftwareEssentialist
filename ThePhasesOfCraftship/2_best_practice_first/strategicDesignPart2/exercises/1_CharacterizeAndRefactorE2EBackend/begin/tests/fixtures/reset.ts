@@ -1,6 +1,7 @@
-import { prisma } from "../../database";
+import { prisma } from "../../src/database";
 
 async function resetDatabase() {
+  console.log("Reseting database");
   const deleteAllClassEnrollments = prisma.classEnrollment.deleteMany();
   const deleteAllStudentAssignments = prisma.studentAssignment.deleteMany();
   const deleteAllStudents = prisma.student.deleteMany();
